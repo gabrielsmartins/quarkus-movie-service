@@ -1,0 +1,9 @@
+aws:
+  dynamodb:
+    endpoint: http://localhost:8000
+    region: sa-east-1
+    credentials:
+      access-key: movie-service
+      secret-key: movie-service
+
+
