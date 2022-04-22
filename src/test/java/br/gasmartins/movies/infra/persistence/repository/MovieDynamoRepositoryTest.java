@@ -1,14 +1,16 @@
 package br.gasmartins.movies.infra.persistence.repository;
 
+import br.gasmartins.movies.infra.persistence.entity.MovieEntity;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
-import com.amazonaws.services.dynamodbv2.local.main.ServerRunner;
-import com.amazonaws.services.dynamodbv2.local.server.DynamoDBProxyServer;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapperConfig;
+import com.amazonaws.services.dynamodbv2.model.BillingMode;
+import com.amazonaws.services.dynamodbv2.model.ResourceInUseException;
 import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.inject.Inject;
 
@@ -16,6 +18,7 @@ import static br.gasmartins.movies.domain.support.MovieSupport.defaultMovie;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @QuarkusTest
+@ExtendWith(DynamoDBExtension.class)
 public class MovieDynamoRepositoryTest {
 
     @Inject
@@ -26,19 +29,20 @@ public class MovieDynamoRepositoryTest {
 
     @Inject
     private AmazonDynamoDB amazonDynamoDB;
-    private static DynamoDBProxyServer server;
 
-    @BeforeAll
-    public static void setupAll() throws Exception {
-        System.setProperty("sqlite4java.library.path", "native-libs");
-        String port = "8000";
-        server = ServerRunner.createServerFromCommandLineArgs(new String[]{"-inMemory", "-port", port});
-        server.start();
-    }
+    private static final String TABLE_NAME = "Movies";
 
-    @AfterAll
-    public static void tearDownAll() throws Exception {
-        server.stop();
+    @BeforeEach
+    public void setup() {
+        try {
+        var config = new DynamoDBMapperConfig.TableNameOverride(TABLE_NAME).config();
+        var tableRequest = dynamoDBMapper.generateCreateTableRequest(MovieEntity.class, config);
+        tableRequest.setBillingMode(BillingMode.PAY_PER_REQUEST.toString());
+        //tableRequest.setProvisionedThroughput(new ProvisionedThroughput(5L, 5L));
+        amazonDynamoDB.createTable(tableRequest);
+        } catch (ResourceInUseException e) {
+            // Do nothing, table already created
+        }
     }
 
     @Test

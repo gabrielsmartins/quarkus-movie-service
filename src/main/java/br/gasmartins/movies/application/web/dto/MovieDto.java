@@ -28,6 +28,9 @@ public class MovieDto {
     @JsonProperty("year")
     private Integer year;
 
+    @JsonProperty("directed_by")
+    private String directedBy;
+
     @JsonProperty("duration")
     @JsonFormat(pattern = "HH:mm")
     private LocalTime duration;

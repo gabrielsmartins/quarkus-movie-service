@@ -26,7 +26,7 @@ public class MovieDynamoRepositoryMapperTest {
         assertThat(movieEntity).hasNoNullFieldsOrProperties();
         assertThat(movieEntity.getId()).isEqualTo(movie.getId());
         assertThat(movieEntity.getName()).isEqualTo(movie.getName());
-        assertThat(movieEntity.getGenre()).isEqualTo(movie.getGenre().getDescription());
+        assertThat(movieEntity.getGenre()).isEqualTo(movie.getGenre());
         assertThat(movieEntity.getYear()).isEqualTo(movie.getYear());
         assertThat(movieEntity.getDuration()).isEqualTo(movie.getDuration());
         assertThat(movieEntity.getActors().size()).isEqualTo(movie.getActors().size());
@@ -40,7 +40,7 @@ public class MovieDynamoRepositoryMapperTest {
         assertThat(movie).hasNoNullFieldsOrProperties();
         assertThat(movie.getId()).isEqualTo(movieEntity.getId());
         assertThat(movie.getName()).isEqualTo(movieEntity.getName());
-        assertThat(movie.getGenre().getDescription()).isEqualTo(movieEntity.getGenre());
+        assertThat(movie.getGenre()).isEqualTo(movieEntity.getGenre());
         assertThat(movie.getYear()).isEqualTo(movieEntity.getYear());
         assertThat(movie.getDuration()).isEqualTo(movieEntity.getDuration());
         assertThat(movie.getActors().size()).isEqualTo(movieEntity.getActors().size());

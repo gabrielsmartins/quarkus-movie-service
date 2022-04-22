@@ -92,13 +92,6 @@
       <artifactId>quarkus-resteasy-reactive</artifactId>
     </dependency>
 
-    <!--
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-amazon-dynamodb</artifactId>
-    </dependency>
-    -->
-
     <dependency>
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-java-sdk-dynamodb</artifactId>
@@ -313,7 +306,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
-        <version>3.3.0</version>
+        <version>${maven-dependency.version}</version>
         <executions>
           <execution>
             <id>copy</id>
@@ -337,7 +330,7 @@
     <repository>
       <id>dynamodb-local</id>
       <name>DynamoDB Local Release Repository</name>
-      <url>https://s3-sa-east-1.amazonaws.com/dynamodb-local-sao-paulo</url>
+      <url>https://s3-us-west-2.amazonaws.com/dynamodb-local/release</url>
     </repository>
   </repositories>
 
