@@ -16,8 +16,8 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
       - name: Compile
-          run: ./mvnw clean compile
+        run: ./mvnw clean compile
       - name: Test
         run: ./mvnw test
       - name: Build
-          run: ./mvnw install
+        run: ./mvnw install
