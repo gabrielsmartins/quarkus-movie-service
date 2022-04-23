@@ -15,5 +15,9 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
-      - name: Build with Maven
-        run: ./mvnw clean install
+      - name: Compile
+          run: ./mvnw clean compile
+      - name: Test
+        run: ./mvnw test
+      - name: Build
+          run: ./mvnw install
