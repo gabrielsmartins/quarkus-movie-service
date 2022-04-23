@@ -36,6 +36,9 @@ public class MovieEntity implements Serializable {
     @DynamoDBAttribute(attributeName="Year")
     private Integer year;
 
+    @DynamoDBAttribute(attributeName="DirectedBy")
+    private String directedBy;
+
     @DynamoDBTypeConverted(converter = LocalTimeConverter.class)
     @DynamoDBAttribute(attributeName="Duration")
     private LocalTime duration;

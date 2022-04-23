@@ -1,9 +1,10 @@
 package br.gasmartins.movies.infra.persistence.repository;
 
+import br.gasmartins.movies.domain.*;
 import br.gasmartins.movies.infra.persistence.entity.MovieEntity;
 import br.gasmartins.movies.infra.persistence.repository.mapper.MovieDynamoRepositoryMapper;
-import br.gasmartins.movies.domain.Movie;
-import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBScanExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
 import com.amazonaws.services.dynamodbv2.model.Condition;
@@ -13,6 +14,7 @@ import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class MovieDynamoRepository implements MovieRepository {
@@ -36,21 +38,23 @@ public class MovieDynamoRepository implements MovieRepository {
     }
 
     @Override
-    public PaginatedScanList<Movie> findAll() {
+    public Page<Movie> findAll(Pageable pageable) {
         var scan = new DynamoDBScanExpression();
         var paginatedScanList = dynamoDBMapper.scan(MovieEntity.class, scan);
-        return null;
+        var movies = paginatedScanList.stream().map(this.mapper::mapToDomain).collect(Collectors.toList());
+        return new PageImpl<>(movies, pageable, paginatedScanList.size());
     }
 
     @Override
-    public PaginatedQueryList<Movie> findByName(String name) {
-        var query = new DynamoDBQueryExpression<MovieEntity>();
+    public Page<Movie> findByName(String name, Pageable pageable) {
         var conditions = new HashMap<String, Condition>();
         conditions.put("Name", new Condition().withComparisonOperator(ComparisonOperator.BEGINS_WITH)
-                                              .withAttributeValueList(new AttributeValue().withN(name)));
-        query.setRangeKeyConditions(conditions);
-        var paginatedQueryList = dynamoDBMapper.query(MovieEntity.class, query);
-        return null;
+                .withAttributeValueList(new AttributeValue().withS(name)));
+        var scan = new DynamoDBScanExpression()
+                                             .withScanFilter(conditions);
+        var paginatedQueryList = dynamoDBMapper.scan(MovieEntity.class, scan);
+        var movies = paginatedQueryList.stream().map(this.mapper::mapToDomain).collect(Collectors.toList());
+        return new PageImpl<>(movies, pageable, paginatedQueryList.size());
     }
 
     @Override

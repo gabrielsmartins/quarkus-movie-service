@@ -1,9 +1,9 @@
 package br.gasmartins.movies.domain.service;
 
-import br.gasmartins.movies.infra.persistence.repository.MovieRepository;
 import br.gasmartins.movies.domain.Movie;
-import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedQueryList;
-import com.amazonaws.services.dynamodbv2.datamodeling.PaginatedScanList;
+import br.gasmartins.movies.domain.Page;
+import br.gasmartins.movies.domain.Pageable;
+import br.gasmartins.movies.domain.MovieRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -26,13 +26,13 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public PaginatedScanList<Movie> findAll() {
-        return this.repository.findAll();
+    public Page<Movie> findAll(Pageable pageable) {
+        return this.repository.findAll(pageable);
     }
 
     @Override
-    public PaginatedQueryList<Movie> findByName(String name) {
-        return this.repository.findByName(name);
+    public Page<Movie> findByName(String name, Pageable pageable) {
+        return this.repository.findByName(name, pageable);
     }
 
     @Override

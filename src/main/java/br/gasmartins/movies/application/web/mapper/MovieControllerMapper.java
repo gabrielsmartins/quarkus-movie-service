@@ -4,6 +4,7 @@ import br.gasmartins.movies.application.web.dto.ActorDto;
 import br.gasmartins.movies.application.web.dto.MovieDto;
 import br.gasmartins.movies.domain.Actor;
 import br.gasmartins.movies.domain.Movie;
+import br.gasmartins.movies.domain.enums.Genre;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -38,6 +39,7 @@ public class MovieControllerMapper {
                                                                                                .map(actorMapper::mapToDomain)
                                                                                                .collect(Collectors.toList()))
                         .map(this.source.getActors(), this.destination.getActors());
+                using((Converter<String, Genre>) mappingContext -> Genre.fromDescription(mappingContext.getSource())).map(this.source.getGenre(), this.destination.getGenre());
             }
         });
         return mapper.map(movieDto, Movie.class);

@@ -14,9 +14,10 @@ public class MovieEntitySupport {
     public static MovieEntity.MovieEntityBuilder defaultMovieEntity(){
         return MovieEntity.builder()
                 .withId(UUID.randomUUID())
-                .withName("John Wick")
+                .withName("Rocky Balboa")
                 .withGenre(Genre.ACTION)
-                .withYear(2018)
+                .withYear(2006)
+                .withDirectedBy("Sylvester Stallone")
                 .withDuration(LocalTime.of(1, 30));
     }
 }

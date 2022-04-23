@@ -2,14 +2,15 @@ package br.gasmartins.movies.application.web;
 
 import br.gasmartins.movies.application.web.dto.MovieDto;
 import br.gasmartins.movies.application.web.mapper.MovieControllerMapper;
+import br.gasmartins.movies.domain.PageRequest;
 import br.gasmartins.movies.domain.exception.MovieNotFoundException;
 import br.gasmartins.movies.domain.service.MovieService;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -31,18 +32,21 @@ public class MovieController {
     }
 
     @POST
-    public MovieDto create(MovieDto movieDto) {
+    public Response create(@Valid MovieDto movieDto, @Context UriInfo uriInfo) {
         log.info("Creating new movie: {}", kv("movie",movieDto));
         log.info("Mapping movie: {}", kv("movie",movieDto));
         var movie = this.mapper.mapToDomain(movieDto);
         log.info("Saving movie: {}", kv("movie", movie));
         var savedMovie = this.service.save(movie);
         log.info("Movie was saved successfully: {}", savedMovie);
-        return this.mapper.mapToDto(savedMovie);
+        var mappedMovie = this.mapper.mapToDto(savedMovie);
+        var uriBuilder = uriInfo.getAbsolutePathBuilder();
+        uriBuilder.path(mappedMovie.getId().toString());
+        return Response.created(uriBuilder.build()).entity(mappedMovie).build();
     }
 
     @PUT
-    @Path("{id}")
+    @Path("/{id}")
     public MovieDto update(@PathParam("id") UUID id, MovieDto movieDto) {
         log.info("Searching for movie by id: {}", kv("id", id));
         var existingMovie = this.service.findById(id)
@@ -55,7 +59,7 @@ public class MovieController {
     }
 
     @GET
-    @Path("{id}")
+    @Path("/{id}")
     public MovieDto findById(@PathParam("id") UUID id) {
         log.info("Searching for movie by id: {}", kv("id", id));
         var movie = this.service.findById(id)
@@ -65,11 +69,19 @@ public class MovieController {
     }
 
     @GET
-    public Response findAll() {
+    public Response findByCriteria(@QueryParam("name") String name, @DefaultValue("0") @QueryParam("page") Integer pageNumber, @DefaultValue("30") @QueryParam("page_size") Integer pageSize){
+        if(name == null || name.isEmpty()){
+            return findAll(pageNumber, pageSize);
+        }
+        return findByName(name, pageNumber, pageSize);
+    }
+
+    private Response findAll(Integer pageNumber, Integer pageSize) {
         log.info("Searching for movies ...");
-        var paginatedScanList = this.service.findAll();
-        if(!paginatedScanList.isEmpty()){
-            var movies = paginatedScanList.stream()
+        PageRequest pageable = PageRequest.of(pageNumber, pageSize);
+        var page = this.service.findAll(pageable);
+        if(!page.isEmpty()){
+            var movies = page.getContent().stream()
                                                         .map(this.mapper::mapToDto)
                                                         .collect(Collectors.toList());
             log.info("Movies found: {}", kv("movies", movies));
@@ -79,8 +91,23 @@ public class MovieController {
         return Response.noContent().build();
     }
 
+    private Response findByName(String name, Integer pageNumber, Integer pageSize) {
+        log.info("Searching for movies ...");
+        var pageable = PageRequest.of(pageNumber, pageSize);
+        var page = this.service.findByName(name, pageable);
+        if(!page.isEmpty()){
+            var movies = page.getContent().stream()
+                                           .map(this.mapper::mapToDto)
+                                           .collect(Collectors.toList());
+            log.info("Movies found: {}", kv("movies", movies));
+            return Response.status(Response.Status.PARTIAL_CONTENT).entity(movies).build();
+        }
+        log.warn("No movies found");
+        return Response.noContent().build();
+    }
+
     @DELETE
-    @Path("{id}")
+    @Path("/{id}")
     public Response delete(@PathParam("id") UUID id) {
         log.info("Deleting movie by id: {}", kv("id", id));
         this.service.delete(id);

@@ -1,5 +1,6 @@
 package br.gasmartins.movies.infra.persistence.repository;
 
+import br.gasmartins.movies.domain.PageRequest;
 import br.gasmartins.movies.infra.persistence.entity.MovieEntity;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
@@ -80,8 +81,8 @@ public class MovieDynamoRepositoryTest {
         var movie = defaultMovie().withId(null)
                                          .build();
         this.repository.save(movie);
-        var paginatedScanList = this.repository.findAll();
-        assertThat(paginatedScanList).isNotEmpty();
+        var page = this.repository.findAll(PageRequest.of(0, 30));
+        assertThat(page.getContent()).isNotEmpty();
     }
 
     @Test
@@ -90,7 +91,7 @@ public class MovieDynamoRepositoryTest {
         var movie = defaultMovie().withId(null)
                                          .build();
         this.repository.save(movie);
-        var paginatedQueryList = this.repository.findByName(movie.getName());
-        assertThat(paginatedQueryList).isNotEmpty();
+        var page = this.repository.findByName(movie.getName(), PageRequest.of(0, 30));
+        assertThat(page.getContent()).isNotEmpty();
     }
 }

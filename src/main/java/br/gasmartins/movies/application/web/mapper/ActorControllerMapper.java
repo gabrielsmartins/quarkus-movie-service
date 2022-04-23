@@ -17,7 +17,7 @@ public class ActorControllerMapper {
         mapper.addMappings(new PropertyMap<ActorDto, Actor>() {
             @Override
             protected void configure() {
-                using((Converter<Character, Gender>) mappingContext -> Gender.fromPrefix(mappingContext.getSource()))
+                using((Converter<String, Gender>) mappingContext -> mappingContext.getSource() == null ? null : Gender.fromPrefix(mappingContext.getSource().charAt(0)))
                         .map(this.source.getGender(), this.destination.getGender());
             }
         });

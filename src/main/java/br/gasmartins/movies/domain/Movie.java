@@ -19,6 +19,7 @@ public class Movie {
     private String name;
     private Genre genre;
     private Integer year;
+    private String directedBy;
     private LocalTime duration;
 
     @Singular

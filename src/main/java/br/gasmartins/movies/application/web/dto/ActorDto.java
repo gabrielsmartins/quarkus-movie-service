@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 
 @AllArgsConstructor
@@ -15,16 +17,20 @@ import java.time.LocalDate;
 public class ActorDto {
 
     @JsonProperty("name")
+    @NotNull
     private String name;
 
     @JsonProperty("role")
+    @NotNull
     private String role;
 
     @JsonProperty("dob")
     @JsonFormat(pattern = "yyyy-MM-dd")
+    @NotNull
     private LocalDate dateOfBirthday;
 
     @JsonProperty("gender")
-    private Character gender;
+    @Pattern(regexp = "M|F")
+    private String gender;
 
 }
