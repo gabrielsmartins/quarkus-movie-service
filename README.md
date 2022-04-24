@@ -14,10 +14,19 @@ If you want to learn more about Quarkus, please visit its website: https://quark
   - 2.1.[Running the application in dev mode](#run_dev_mode) 
   - 2.2.[Packaging and running the application](#packing_and_running)
   - 2.3.[Creating a native executable](#native_executable)
-- 3.[Related Guides](#related_guides)
-  - 3.1[RESTEasy Reactive]("#rest_easy_reactive")
+- 3.[API Reference](#api_reference)
+  - 3.1[Create New Movie](#create_new_movie)
+  - 3.2[Update Movie](#update_movie)
+  - 3.3[Search Movie By ID](#search_movie_by_id)
+  - 3.3[Search Movies By Name](#search_movies_by_name)
+  - 3.4[Search All Movies](#search_all_movies)
+  - 3.2[Delete Movie](#delete_movie)
+- 4.[Related Guides](#related_guides)
+  - 4.1.[RESTEasy Reactive]("#rest_easy_reactive")
 
 ## <a name="setup_environment">Setup Environment</a>
+
+Follow the instructions to setup the environment
 
 ### <a name="configure_aws_cli">Configure AWS CLI</a>
 
@@ -53,6 +62,8 @@ $ aws --endpoint http://localhost:4566 dynamodb \
  --billing-mode PAY_PER_REQUEST
 ```
 ## <a name="running_application">Running Application</a>
+
+Follow the instructions to run the application
 
 ### <a name="run_dev_mode">Running the application in dev mode</a>
 
@@ -96,6 +107,167 @@ Or, if you don't have GraalVM installed, you can run the native executable build
 You can then execute your native executable with: `./target/quarkus-movies-service-1.0.0-SNAPSHOT-runner`
 
 If you want to learn more about building native executables, please consult https://quarkus.io/guides/maven-tooling.
+
+## <a name="api_reference">API Reference</a>
+
+This application has the following features:
+
+### <a name="create_new_movie">Create New Movie</a>
+
+Use the following example to create a new movie:
+
+#### *Request*
+```shell script
+curl --location --request POST 'http://localhost:8080/movies/v1' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "name": "Rocky Balboa",
+    "genre": "ACTION",
+    "year": 1976,
+    "duration": "01:59",
+    "directed_by": "John G. Avildsen",
+    "actors": [
+        {
+            "name": "Sylvester Stallone",
+            "role": "Rocky Balboa",
+            "dob": "1946-07-06",
+            "gender": "M"
+        }
+    ]
+}'
+```
+
+#### *Response*
+```json
+{
+  "id": "c63fa101-b2a9-446b-99d7-6911ffa82ee7",
+  "name": "Rocky Balboa",
+  "genre": "ACTION",
+  "year": 1976,
+  "directed_by": "John G. Avildsen",
+  "duration": "01:59",
+  "actors": [
+    {
+      "name": "Sylvester Stallone",
+      "role": "Rocky Balboa",
+      "dob": "1946-07-06",
+      "gender": "MALE"
+    }
+  ]
+}
+```
+
+### <a name="update_movie">Update Movie</a>
+
+Use the following example to update a movie:
+
+#### *Request*
+```shell script
+curl --location --request PUT 'http://localhost:8080/movies/v1/c63fa101-b2a9-446b-99d7-6911ffa82ee7' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "name": "The Godfather",
+    "genre": "DRAMA",
+    "year": 1972,
+    "duration": "02:55",
+    "directed_by": "Francis Ford Coppola",
+    "actors": [
+        {
+            "name": "Marlon Brando",
+            "role": "Vito Corleone",
+            "dob": "1924-04-03",
+            "gender": "M"
+        }
+    ]
+}'
+```
+
+#### *Response*
+```json
+{
+  "id": "c63fa101-b2a9-446b-99d7-6911ffa82ee7",
+  "name": "The Godfather",
+  "genre": "DRAMA",
+  "year": 1972,
+  "directed_by": "Francis Ford Coppola",
+  "duration": "02:55",
+  "actors": [
+    {
+      "name": "Marlon Brando",
+      "role": "Vito Corleone",
+      "dob": "1924-04-03",
+      "gender": "MALE"
+    }
+  ]
+}
+```
+
+### <a name="search_movie_by_id">Search Movie By ID</a>
+
+Use the following example to search movie by ID:
+
+#### *Request*
+```shell script
+curl --location --request GET 'http://localhost:8080/movies/v1/c63fa101-b2a9-446b-99d7-6911ffa82ee7'
+```
+
+#### *Response*
+```json
+{
+  "id": "c63fa101-b2a9-446b-99d7-6911ffa82ee7",
+  "name": "Rocky Balboa",
+  "genre": "ACTION",
+  "year": 1976,
+  "directed_by": "John G. Avildsen",
+  "duration": "01:59",
+  "actors": [
+    {
+      "name": "Sylvester Stallone",
+      "role": "Rocky Balboa",
+      "dob": "1946-07-06",
+      "gender": "MALE"
+    }
+  ]
+}
+```
+
+### <a name="search_all_movies">Search All Movies</a>
+
+Use the following example to search all movies:
+
+#### *Request*
+```shell script
+curl --location --request GET 'http://localhost:8080/movies/v1/' 
+```
+
+#### *Response*
+```json
+{
+  "id": "c63fa101-b2a9-446b-99d7-6911ffa82ee7",
+  "name": "Rocky Balboa",
+  "genre": "ACTION",
+  "year": 1976,
+  "directed_by": "John G. Avildsen",
+  "duration": "01:59",
+  "actors": [
+    {
+      "name": "Sylvester Stallone",
+      "role": "Rocky Balboa",
+      "dob": "1946-07-06",
+      "gender": "MALE"
+    }
+  ]
+}
+```
+
+### <a name="delete_movie">Delete Movie</a>
+
+Use the following example to delete a movie:
+
+#### *Request*
+```shell script
+curl --location --request DELETE 'http://localhost:8080/movies/v1/c63fa101-b2a9-446b-99d7-6911ffa82ee7'
+```
 
 ## <a name="related_guides">Related Guides</a>
 
