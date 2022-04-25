@@ -15,12 +15,12 @@ If you want to learn more about Quarkus, please visit its website: https://quark
   - 2.2.[Packaging and running the application](#packing_and_running)
   - 2.3.[Creating a native executable](#native_executable)
 - 3.[API Reference](#api_reference)
-  - 3.1[Create New Movie](#create_new_movie)
-  - 3.2[Update Movie](#update_movie)
-  - 3.3[Search Movie By ID](#search_movie_by_id)
-  - 3.3[Search Movies By Name](#search_movies_by_name)
-  - 3.4[Search All Movies](#search_all_movies)
-  - 3.2[Delete Movie](#delete_movie)
+  - 3.1.[Create New Movie](#create_new_movie)
+  - 3.2.[Update Movie](#update_movie)
+  - 3.3.[Search Movie By ID](#search_movie_by_id)
+  - 3.3.[Search Movies By Name](#search_movies_by_name)
+  - 3.4.[Search All Movies](#search_all_movies)
+  - 3.2.[Delete Movie](#delete_movie)
 - 4.[Related Guides](#related_guides)
   - 4.1.[RESTEasy Reactive]("#rest_easy_reactive")
 
@@ -230,6 +230,42 @@ curl --location --request GET 'http://localhost:8080/movies/v1/c63fa101-b2a9-446
   ]
 }
 ```
+### <a name="search_movies_by_name">Search Movies By Name</a>
+
+Use the following example to search movies by name:
+
+#### *Request*
+```shell script
+curl --location --request GET 'http://localhost:8080/movies/v1?name=Rocky' 
+```
+
+#### *Response*
+```json
+{
+  "data": [
+    {
+      "id": "622a86dc-3f22-4be3-87d8-619e9cdaa88a",
+      "name": "Rocky Balboa",
+      "genre": "ACTION",
+      "year": 1976,
+      "directed_by": "John G. Avildsen",
+      "duration": "01:59",
+      "actors": [
+        {
+          "name": "Sylvester Stallone",
+          "role": "Rocky Balboa",
+          "dob": "1946-07-06",
+          "gender": "MALE"
+        }
+      ]
+    }
+  ],
+  "page_size": 30,
+  "page_number": 0,
+  "total_pages": 1,
+  "total_elements": 1
+}
+```
 
 ### <a name="search_all_movies">Search All Movies</a>
 
@@ -243,20 +279,44 @@ curl --location --request GET 'http://localhost:8080/movies/v1/'
 #### *Response*
 ```json
 {
-  "id": "c63fa101-b2a9-446b-99d7-6911ffa82ee7",
-  "name": "Rocky Balboa",
-  "genre": "ACTION",
-  "year": 1976,
-  "directed_by": "John G. Avildsen",
-  "duration": "01:59",
-  "actors": [
+  "data": [
     {
-      "name": "Sylvester Stallone",
-      "role": "Rocky Balboa",
-      "dob": "1946-07-06",
-      "gender": "MALE"
+      "id": "622a86dc-3f22-4be3-87d8-619e9cdaa88a",
+      "name": "Rocky Balboa",
+      "genre": "ACTION",
+      "year": 1976,
+      "directed_by": "John G. Avildsen",
+      "duration": "01:59",
+      "actors": [
+        {
+          "name": "Sylvester Stallone",
+          "role": "Rocky Balboa",
+          "dob": "1946-07-06",
+          "gender": "MALE"
+        }
+      ]
+    },
+    {
+      "id": "c63fa101-b2a9-446b-99d7-6911ffa82ee7",
+      "name": "The Godfather",
+      "genre": "DRAMA",
+      "year": 1972,
+      "directed_by": "Francis Ford Coppola",
+      "duration": "02:55",
+      "actors": [
+        {
+          "name": "Marlon Brando",
+          "role": "Vito Corleone",
+          "dob": "1924-04-03",
+          "gender": "MALE"
+        }
+      ]
     }
-  ]
+  ],
+  "page_size": 30,
+  "page_number": 0,
+  "total_pages": 1,
+  "total_elements": 2
 }
 ```
 

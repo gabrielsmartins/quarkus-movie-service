@@ -10,9 +10,11 @@ import lombok.extern.slf4j.Slf4j;
 import javax.inject.Inject;
 import javax.validation.Valid;
 import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static net.logstash.logback.argument.StructuredArguments.kv;
 
@@ -81,11 +83,9 @@ public class MovieController {
         PageRequest pageable = PageRequest.of(pageNumber, pageSize);
         var page = this.service.findAll(pageable);
         if(!page.isEmpty()){
-            var movies = page.getContent().stream()
-                                                        .map(this.mapper::mapToDto)
-                                                        .collect(Collectors.toList());
-            log.info("Movies found: {}", kv("movies", movies));
-            return Response.status(Response.Status.PARTIAL_CONTENT).entity(movies).build();
+            var pageDto = this.mapper.mapToDto(page);
+            log.info("Movies found: {}", kv("movies", pageDto));
+            return Response.status(Response.Status.PARTIAL_CONTENT).entity(pageDto).build();
         }
         log.warn("No movies found");
         return Response.noContent().build();
@@ -96,11 +96,9 @@ public class MovieController {
         var pageable = PageRequest.of(pageNumber, pageSize);
         var page = this.service.findByName(name, pageable);
         if(!page.isEmpty()){
-            var movies = page.getContent().stream()
-                                           .map(this.mapper::mapToDto)
-                                           .collect(Collectors.toList());
-            log.info("Movies found: {}", kv("movies", movies));
-            return Response.status(Response.Status.PARTIAL_CONTENT).entity(movies).build();
+            var pageDto = this.mapper.mapToDto(page);
+            log.info("Movies found: {}", kv("movies", pageDto));
+            return Response.status(Response.Status.PARTIAL_CONTENT).entity(pageDto).build();
         }
         log.warn("No movies found");
         return Response.noContent().build();

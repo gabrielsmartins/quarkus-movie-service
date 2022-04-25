@@ -2,8 +2,10 @@ package br.gasmartins.movies.application.web.mapper;
 
 import br.gasmartins.movies.application.web.dto.ActorDto;
 import br.gasmartins.movies.application.web.dto.MovieDto;
+import br.gasmartins.movies.application.web.dto.PageDto;
 import br.gasmartins.movies.domain.Actor;
 import br.gasmartins.movies.domain.Movie;
+import br.gasmartins.movies.domain.Page;
 import br.gasmartins.movies.domain.enums.Genre;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
@@ -43,5 +45,17 @@ public class MovieControllerMapper {
             }
         });
         return mapper.map(movieDto, Movie.class);
+    }
+
+    public PageDto<MovieDto> mapToDto(Page<Movie> page){
+        var content = page.getContent()
+                                        .stream().map(this::mapToDto)
+                                        .collect(Collectors.toList());
+        var pageable = page.getPageable();
+        int pageSize = pageable.getPageSize();
+        int pageNumber = pageable.getPageNumber();
+        long totalPages = page.getTotalPages();
+        long totalElements = page.getTotalElements();
+        return new PageDto<>(content, pageSize, pageNumber, totalPages, totalElements);
     }
 }
