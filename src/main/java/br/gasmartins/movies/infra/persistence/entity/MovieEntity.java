@@ -47,6 +47,4 @@ public class MovieEntity implements Serializable {
     @DynamoDBAttribute(attributeName = "Actors")
     private List<ActorEntity> actors;
 
-
-
 }
