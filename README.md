@@ -6,6 +6,8 @@ This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
 If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
 
+See my article on [Medium](https://gasmartins.medium.com/quarkus-application-using-aws-dynamodb-and-localstack-4aa578528400)
+
 - 1.[Setup Environment](#setup_environment)
   - 1.1.[Configure AWS CLI](#configure_aws_cli)
   - 1.2.[Configure AWS Localstack](#configure_aws_localstack)
